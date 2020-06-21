@@ -1,0 +1,16 @@
+{
+  "name": "manish-portfolio",
+  "version": "1.0.0",
+  "description": "Web Interface to show my(Manish Mehta) career portfolio",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "author": "Manish Mehta",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "ejs": "^2.5.7"
+  }
+}
