@@ -21,5 +21,5 @@ app.get('/', (req, res) => {
 	res.render('./index.ejs', { year_experiance });
 })
 
-//Listen on port 3000
-server = app.listen(process.env.PORT || 5000);
+//Listen on port 
+app.listen(process.env.PORT || 5000);
