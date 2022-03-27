@@ -38,7 +38,7 @@
 						if (isInView) {
 							setTimeout(function () {
 								$item.addClass('animated ' + animation).removeClass('animate');
-							}, i * 50);
+							}, i * 150);
 						} else if (!screencheck(767)) {
 							$item.removeClass('animated ' + animation).addClass('animate');
 						}
@@ -155,7 +155,7 @@
 		if ($('.fullpage-default').length) {
 			var myFullpage = new fullpage('.fullpage-default', {
 				licenseKey: ' C7F41B00-5E824594-9A5EFB99-B556A3D5',
-				anchors: ['home-section', 'about-me-section', 'services-section', 'skills-section', 'work-section', 'contact1-section'],
+				anchors: ['home-section', 'about-me-section', 'services-section', 'skills-section', 'work-section', 'contact-section'],
 				menu: '#nav',
 				lazyLoad: true,
 				navigation: true,
