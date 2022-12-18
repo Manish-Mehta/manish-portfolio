@@ -19,7 +19,13 @@ app.get('/', (req, res) => {
 
 	year_experiance = `${Math.floor(year_experiance / 12)}Y ${year_experiance % 12}M`;
 	res.render('./index.ejs', { year_experiance });
-})
+});
+
+app.get('/health', (req, res) => {
+	res.end("success");
+});
 
 //Listen on port 
-app.listen(process.env.PORT || 5000);
+app.listen(process.env.PORT || 5000, () => {
+  console.log(`Server started at ${process.env.PORT || 5000}`)
+});
