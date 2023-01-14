@@ -18,6 +18,12 @@ app.get('/', (req, res) => {
 		+ (now.getMonth() - startDate.getMonth()));
 
 	year_experiance = `${Math.floor(year_experiance / 12)}Y ${year_experiance % 12}M`;
+	const h = req.headers;
+	console.log({from: h.from, loc: h.location, origin: h.origin, host: h.host, 
+		baseUrl: req.baseUrl, body: req.body, hostname:req.hostname, ip: req.ip, ips: req.ips,
+		originalUrl:req.originalUrl, params: req.params, query:req.query
+	})
+	// console.log(req.headers.from)
 	res.render('./index.ejs', { year_experiance });
 });
 
