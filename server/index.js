@@ -3,12 +3,15 @@ const express = require('express');
 const router = express.Router();
 const mongo = require("./mongo");
 
-mongo.init();
+const env = process.env.ENV || "DEV";
 
-const env = process.env.ENV || "DEV"
+// Start DB for Prod
+if (env == "PROD") {
+  mongo.init();
+}
 
 //routes
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
 
   const startDate = new Date('2016-7-1');
   const now = new Date();
@@ -17,7 +20,12 @@ router.get('/', (req, res) => {
 
   year_experiance = `${Math.floor(year_experiance / 12)}Y ${year_experiance % 12}M`;
 
-  res.render('./index.ejs', { year_experiance });
+  let portfolio_visit = 1000;
+  if (env == "PROD") {
+    portfolio_visit = (await mongo.fetchMetrics().catch(console.dir)) || portfolio_visit;
+  }
+
+  res.render('./index.ejs', { year_experiance, portfolio_visit });
 
   // Update Metrics for Prod
   if (env == "PROD") {
