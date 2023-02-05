@@ -129,7 +129,7 @@ figure {
   opacity: 1 !important;
 }
 
-video {
+#bgr-img {
   position: fixed;
   right: 0;
   bottom: 0;

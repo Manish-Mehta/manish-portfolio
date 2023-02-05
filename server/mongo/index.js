@@ -1,20 +1,35 @@
 const { MongoClient, ServerApiVersion } = require("mongodb");
+const { debug: debugLog, error: errorLog, info: infoLog } = require("../utils/logger");
 
 
+
+const env = process.env.ENV || "DEV"
 const dbName = process.env.DB_NAME;
 const dbUri = process.env.DB_URI;
-const client = new MongoClient(dbUri, { serverApi: ServerApiVersion.v1 });
+
+let client;
 
 async function init() {
   try {
+    if (!dbUri || !dbName) {
+      return;
+    }
+    client = new MongoClient(dbUri, { serverApi: ServerApiVersion.v1 });
     // Connect the client to the server (optional starting in v4.7)
     await client.connect();
     // Establish and verify connection
     await client.db("admin").command({ ping: 1 });
-    console.log("Connected successfully to DB server");
-  } finally {
+
+    infoLog("Connected successfully to DB server");
+  } catch(error) {
+    debugLog(error);	
+    errorLog("Error in DB connection");
+    process.exit(1);
+  }finally {
     // Ensures that the client will close when you finish/error
-    await client.close();
+    if (client !== undefined) {
+      await client.close();
+    }
   }
 }
 
@@ -27,17 +42,19 @@ async function updateMetrics(collectionName = "user_metrics") {
     const metric = await collectionObj.findOne();
     // { visits: 0, last_Accessed: Date()}
 
-    console.log({ metric });
+    debugLog({ metric });
+
+    const istDate = (new Date()).toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
 
     if (!metric || !metric.visits) {
       const doc = {
-        visits: 1,
-        last_Accessed: (new Date()).toString()
+        visits: 1000,
+        last_Accessed: istDate
       }
-      console.log({ doc });
+      debugLog({ doc });
 
       const result = await collectionObj.insertOne(doc);
-      console.log(`First doc inserted: ${result.insertedId}`);
+      infoLog(`First doc inserted: ${result.insertedId}`);
       return;
     }
 
@@ -45,7 +62,7 @@ async function updateMetrics(collectionName = "user_metrics") {
     const updateDoc = {
       $set: {
         visits: ++metric.visits,
-        last_Accessed: (new Date()).toString()
+        last_Accessed: istDate
       },
     };
     await collectionObj.updateOne({ _id: metric._id }, updateDoc);
@@ -54,7 +71,27 @@ async function updateMetrics(collectionName = "user_metrics") {
   }
 }
 
+async function fetchMetrics(collectionName = "user_metrics", metricToFetch = 'visits') {
+  try {
+    await client.connect();
+    const database = client.db(dbName);
+    const collectionObj = database.collection(collectionName);
+    const metric = await collectionObj.findOne();
+    
+    debugLog({ metric });
+
+    if (!metric || !metric.visits) {
+      return;
+    }
+    return metric[metricToFetch]
+
+    } finally {
+    await client.close();
+  }
+}
+
 module.exports = {
   init,
-  updateMetrics
+  updateMetrics,
+  fetchMetrics
 }
