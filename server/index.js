@@ -1,12 +1,11 @@
 
+const envVars = require("./config/variables");
 const express = require('express');
 const router = express.Router();
 const mongo = require("./mongo");
 
-const env = process.env.ENV || "DEV";
-
 // Start DB for Prod
-if (env == "PROD") {
+if (envVars.env == "PROD") {
   mongo.init();
 }
 
@@ -21,14 +20,14 @@ router.get('/', async (req, res) => {
   year_experiance = `${Math.floor(year_experiance / 12)}Y ${year_experiance % 12}M`;
 
   let portfolio_visit = 1000;
-  if (env == "PROD") {
+  if (envVars.env == "PROD") {
     portfolio_visit = (await mongo.fetchMetrics().catch(console.dir)) || portfolio_visit;
   }
 
   res.render('./index.ejs', { year_experiance, portfolio_visit });
 
   // Update Metrics for Prod
-  if (env == "PROD") {
+  if (envVars.env == "PROD") {
     mongo.updateMetrics().catch(console.dir);
   }
 });
