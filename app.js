@@ -1,3 +1,4 @@
+const envVars = require("./server/config/variables");
 const express = require('express');
 const app = express();
 const server = require("./server");
@@ -13,6 +14,6 @@ app.use(express.static('public'));
 app.use('/', server.router);
 
 //Listen on port 
-app.listen(process.env.PORT || 5000, () => {
-	infoLog(`Server started at ${process.env.PORT || 5000}, Waiting for DB connection`)
+app.listen(envVars.port, () => {
+	infoLog(`Server started at ${envVars.port}, Waiting for DB connection`)
 });

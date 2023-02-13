@@ -1,31 +1,26 @@
+const envVars = require("../config/variables");
 const { MongoClient, ServerApiVersion } = require("mongodb");
 const { debug: debugLog, error: errorLog, info: infoLog } = require("../utils/logger");
-
-
-
-const env = process.env.ENV || "DEV"
-const dbName = process.env.DB_NAME;
-const dbUri = process.env.DB_URI;
 
 let client;
 
 async function init() {
   try {
-    if (!dbUri || !dbName) {
+    if (!envVars.dbUri || !envVars.dbName) {
       return;
     }
-    client = new MongoClient(dbUri, { serverApi: ServerApiVersion.v1 });
+    client = new MongoClient(envVars.dbUri, { serverApi: ServerApiVersion.v1 });
     // Connect the client to the server (optional starting in v4.7)
     await client.connect();
     // Establish and verify connection
     await client.db("admin").command({ ping: 1 });
 
     infoLog("Connected successfully to DB server");
-  } catch(error) {
-    debugLog(error);	
+  } catch (error) {
+    debugLog(error);
     errorLog("Error in DB connection");
     process.exit(1);
-  }finally {
+  } finally {
     // Ensures that the client will close when you finish/error
     if (client !== undefined) {
       await client.close();
@@ -37,7 +32,7 @@ async function init() {
 async function updateMetrics(collectionName = "user_metrics") {
   try {
     await client.connect();
-    const database = client.db(dbName);
+    const database = client.db(envVars.dbName);
     const collectionObj = database.collection(collectionName);
     const metric = await collectionObj.findOne();
     // { visits: 0, last_Accessed: Date()}
@@ -74,10 +69,10 @@ async function updateMetrics(collectionName = "user_metrics") {
 async function fetchMetrics(collectionName = "user_metrics", metricToFetch = 'visits') {
   try {
     await client.connect();
-    const database = client.db(dbName);
+    const database = client.db(envVars.dbName);
     const collectionObj = database.collection(collectionName);
     const metric = await collectionObj.findOne();
-    
+
     debugLog({ metric });
 
     if (!metric || !metric.visits) {
@@ -85,7 +80,7 @@ async function fetchMetrics(collectionName = "user_metrics", metricToFetch = 'vi
     }
     return metric[metricToFetch]
 
-    } finally {
+  } finally {
     await client.close();
   }
 }

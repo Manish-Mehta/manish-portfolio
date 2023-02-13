@@ -1,9 +1,16 @@
 
+const envVars = require("../config/variables");
 
-const env = process.env.ENV || "DEV"
+const ProdDebug = envVars.prodDebug;
 
 const debug = (msg) => {
-  if(env !== "DEV") {
+
+  if(envVars.prodDebug) {
+    console.log(msg);
+    return;
+  }
+
+  if(envVars.env !== "DEV") {
     return;
   }
   console.log(msg);
