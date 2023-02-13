@@ -1,5 +1,5 @@
 const envVars = require("../config/variables");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient } = require("mongodb");
 const { debug: debugLog, error: errorLog, info: infoLog } = require("../utils/logger");
 
 let client;
