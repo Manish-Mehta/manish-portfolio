@@ -1,7 +1,6 @@
 
 const envVars = require("../config/variables");
 
-const ProdDebug = envVars.prodDebug;
 
 const debug = (msg) => {
 
