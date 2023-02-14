@@ -21,6 +21,7 @@ router.get('/', async (req, res) => {
 
   let portfolio_visit = 1000;
 
+  console.log(req.query)
   if (!req.query.nocount && envVars.env == "PROD") {
     portfolio_visit = (await mongo.fetchMetrics().catch(console.dir)) || portfolio_visit;
   }
