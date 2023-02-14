@@ -20,7 +20,8 @@ router.get('/', async (req, res) => {
   year_experiance = `${Math.floor(year_experiance / 12)}Y ${year_experiance % 12}M`;
 
   let portfolio_visit = 1000;
-  if (envVars.env == "PROD") {
+  
+  if (!req.query.nocount || envVars.env == "PROD") {
     portfolio_visit = (await mongo.fetchMetrics().catch(console.dir)) || portfolio_visit;
   }
 
