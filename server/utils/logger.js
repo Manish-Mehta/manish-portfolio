@@ -4,7 +4,7 @@ const envVars = require("../config/variables");
 
 const debug = (msg) => {
 
-  if(envVars.prodDebug) {
+  if(envVars.prodDebug == "enabled") {
     console.log(msg);
     return;
   }
