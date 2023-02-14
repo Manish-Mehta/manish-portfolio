@@ -21,7 +21,6 @@ router.get('/', async (req, res) => {
 
   let portfolio_visit = 1000;
 
-  console.log(req.query)
   if (!req.query.nocount && envVars.env == "PROD") {
     portfolio_visit = (await mongo.fetchMetrics().catch(console.dir)) || portfolio_visit;
   }
@@ -29,7 +28,7 @@ router.get('/', async (req, res) => {
   res.render('./index.ejs', { year_experiance, portfolio_visit });
 
   // Update Metrics for Prod
-  if (envVars.env == "PROD") {
+  if (!req.query.nocount && envVars.env == "PROD") {
     mongo.updateMetrics().catch(console.dir);
   }
 });
