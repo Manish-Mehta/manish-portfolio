@@ -1,4 +1,5 @@
 const envVars = require("../config/variables");
+const configs = require("../config/");
 const { MongoClient } = require("mongodb");
 const { debug: debugLog, error: errorLog, info: infoLog } = require("../utils/logger");
 
@@ -22,7 +23,7 @@ async function init() {
 }
 
 
-async function updateMetrics(collectionName = "user_metrics") {
+async function updateMetrics(collectionName = "user_metrics", params) {
     const database = client.db(envVars.dbName);
     const collectionObj = database.collection(collectionName);
     const metric = await collectionObj.findOne();
@@ -43,12 +44,15 @@ async function updateMetrics(collectionName = "user_metrics") {
       infoLog(`First doc inserted: ${result.insertedId}`);
       return;
     }
-
+  
+    source = configs.sourceParams[params.s] || configs.sourceParams["o"];
+  
     // create a document that sets the plot of the movie
     const updateDoc = {
       $set: {
         visits: ++metric.visits,
-        last_Accessed: istDate
+        last_Accessed: istDate,
+        [source]: ++metric[source]
       },
     };
     await collectionObj.updateOne({ _id: metric._id }, updateDoc);
