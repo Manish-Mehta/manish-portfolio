@@ -15,5 +15,5 @@ app.use('/', server.router);
 
 //Listen on port 
 app.listen(envVars.port, () => {
-	infoLog(`Server started at ${envVars.port}, Waiting for DB connection`)
+	infoLog(`Server started at ${envVars.port}`)
 });

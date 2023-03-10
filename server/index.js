@@ -3,9 +3,11 @@ const envVars = require("./config/variables");
 const express = require('express');
 const router = express.Router();
 const mongo = require("./mongo");
+const { info: infoLog } = require("./utils/logger");
 
 // Start DB for Prod
 if (envVars.env == "PROD") {
+	infoLog(`Initiating DB connection`);
   mongo.init();
 }
 
@@ -29,7 +31,7 @@ router.get('/', async (req, res) => {
 
   // Update Metrics for Prod
   if (!req.query.nocount && envVars.env == "PROD") {
-    mongo.updateMetrics().catch(console.dir);
+    mongo.updateMetrics(undefined, req.query).catch(console.dir);
   }
 });
 
