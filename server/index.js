@@ -16,18 +16,19 @@ router.get('/', async (req, res) => {
 
   const startDate = new Date('2016-7-1');
   const now = new Date();
-  let year_experiance = ((now.getFullYear() - startDate.getFullYear()) * 12
+  let experience = ((now.getFullYear() - startDate.getFullYear()) * 12
     + (now.getMonth() - startDate.getMonth()));
 
-  year_experiance = `${Math.floor(year_experiance / 12)}Y ${year_experiance % 12}M`;
+  experience = `${Math.floor(experience / 12)}Y ${experience % 12}M`;
 
   let portfolio_visit = 1000;
 
   if (!req.query.nocount && envVars.env == "PROD") {
+    console.log("Fetching metrics");
     portfolio_visit = (await mongo.fetchMetrics().catch(console.dir)) || portfolio_visit;
   }
 
-  res.render('./index.ejs', { year_experiance, portfolio_visit });
+  res.render('./index.ejs', { year_experiance: experience, portfolio_visit });
 
   // Update Metrics for Prod
   if (!req.query.nocount && envVars.env == "PROD") {
